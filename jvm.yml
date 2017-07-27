@@ -1,0 +1,18 @@
+---
+- hosts: test
+  remote_user: hao.yu
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: "cp zabbix_sender"
+      copy: src=/usr/local/bin/zabbix_sender dest=/usr/local/bin/zabbix_sender mode=755 owner=zabbix group=zabbix
+    - name: "cp jmxmonitor.jar"
+      copy: src=/home/andpay/test/jmxmonitor.jar dest=/etc/zabbix/script/ mode=755 owner=zabbix group=zabbix
+    - name: "cp config file"
+      copy: src=jvm.py dest=/etc/zabbix/script/ mode=755 owner=zabbix group=zabbix
+    - name: "cp config file3"
+      copy: src=jvm.conf dest=/etc/zabbix/zabbix_agentd.d/ mode=644 owner=zabbix group=zabbix
+    - name: "fix Timeout"
+      command: sed -i 's/# Timeout=3/Timeout=10/' /etc/zabbix/zabbix_agentd.conf 
+    - name: "restart zabbix-agent"
+      command: /etc/init.d/zabbix-agent restart
